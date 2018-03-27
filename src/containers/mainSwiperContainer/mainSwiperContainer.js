@@ -20,27 +20,27 @@ class MainSwiperContainer extends Component {
   spreadTrackers() {
     let trackers = this.props.trackers.map((tracker, index) => (
         <View style={{flex: 1, flexDirection: 'column', backgroundColor:tracker.color}}>
-          <View style={{flex: 0.15, justifyContent: 'center', alignItems:'center', backgroundColor: 'grey', borderWidth: 1}}>
+          <View style={{flex: 0.15, justifyContent: 'center', alignItems:'center'}}>
             <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>
               {tracker.name}
             </Text>
           </View>
-          <View style={{flex: 0.35, justifyContent: 'center', alignItems: 'center', backgroundColor: 'beige'}}>
+          <View style={{flex: 0.35, justifyContent: 'center', alignItems: 'center'}}>
             <RandomPlaceHolder height={200} width={200} />
           </View> 
-          <View style={{flex: 0.15, borderWidth:1, backgroundColor:'white'}} >
+          <View style={{flex: 0.15}} >
           <ProgressBar
             progress={(tracker.progress / tracker.target)}
             style={{width: window.width}}
-            backgroundStyle={{ backgroundColor: 'red' }}
-            fillStyle={{ backgroundColor: 'pink', height: window.height * 0.145 }}
+            backgroundStyle={{}}
+            fillStyle={{ backgroundColor: 'pink', height: window.height * 0.145, borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
           />
           </View>
-          <View style={{flex: 0.2, borderBottomWidth: 1}}>
+          <View style={{flex: 0.15}}>
             <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>PROGRESS: {tracker.progress} / {tracker.target} </Text>
             <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>{tracker.target - tracker.progress === 0 ? `ALL DONE!` : `${tracker.target - tracker.progress} TO GO!`}</Text>
           </View>
-          <View style={{flex: 0.15, flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'space-between'}}>
             <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => console.log('press')}>
                 <Icon name='settings' size={70} />
             </TouchableHighlight>
@@ -54,7 +54,7 @@ class MainSwiperContainer extends Component {
         </View>
     ))
     let trackersIndex = (
-      <ScrollView contentContainerStyle={{flex: 1, flexDirection: 'column'}}>
+      <ScrollView contentContainerStyle={{flex: 1, flexDirection: 'column', backgroundColor: '#F1F7ED'}}>
         {
           this.props.trackers.map((tracker, index) => (
             <TouchableHighlight onPress={() => this.SwiperComponent.scrollBy(index + 1, true)}>
@@ -79,7 +79,17 @@ class MainSwiperContainer extends Component {
         scrollEnabled={true}
         ref={SwiperComponent => this.SwiperComponent = SwiperComponent}
       >
-        {this.props.trackers.length > 0 ? this.spreadTrackers() : ''}
+        {this.props.trackers.length > 0 ? this.spreadTrackers() : (
+          <TouchableHighlight 
+          onPress={() => this.props.toggleModal(true)} 
+          style={{flex: 1,backgroundColor: '#F1F7ED', justifyContent: 'center', alignItems: 'center'}}
+          underlayColor='rgba(145,199,177,0.8)'
+          >
+            <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}> 
+              <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100', textAlign:'center'}}>Click Here To Add Your First Tracker!</Text>
+            </View>
+          </TouchableHighlight>
+        )}
       </Swiper>
     );
   }

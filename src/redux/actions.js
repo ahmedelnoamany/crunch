@@ -6,3 +6,4 @@ export const toggleModal = trackerModalVisible => ({
   type: TOGGLE_MODAL,
   payload: trackerModalVisible,
 });
+
