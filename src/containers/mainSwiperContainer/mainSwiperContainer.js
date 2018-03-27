@@ -6,21 +6,40 @@ import {
   Text,
   Button,
   ScrollView,
+  TouchableHighlight,
 } from 'react-native';
+import Swiper from 'react-native-swiper';
 
 class MainSwiperContainer extends Component {
-  render() {
-    return (
-      <View>
+  spreadTrackers() {
+    let trackers = this.props.trackers.map((tracker, index) => (
+        <View style={{flex: 1, backgroundColor:tracker.color}}>
+          <Text>
+            {tracker.name}
+          </Text>
+        </View>
+    ))
+    let trackersIndex = (
+      <View style={{flex: 1}}>
         <Text>
-          MainSwiperContainer
-          {this.props.currentTracker.name}
-          <Button
-            title='toggle modal'
-            onPress={() => this.props.toggleModal(true)}
-          />
+          Index
         </Text>
       </View>
+    );
+    trackers.unshift(trackersIndex);
+    console.log(trackers);
+    return trackers;
+  }
+  render() {
+    return (
+      <Swiper
+        index={0}
+        loop={true}
+        showsPagination={false}
+        scrollEnabled={true}
+      >
+        {this.props.trackers.length > 0 ? this.spreadTrackers() : ''}
+      </Swiper>
     );
   }
 }
@@ -33,6 +52,7 @@ function bindActions(dispatch) {
 
 const mapStateToProps = state => ({
   currentTracker: state.currentTracker,
+  trackers: state.trackers,
 })
 
 export default connect (mapStateToProps, bindActions)(MainSwiperContainer);

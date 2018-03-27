@@ -1,6 +1,35 @@
 
 const initialState = {
-  trackers: [],
+  trackers: [
+    {name: 'Test Tracker 1', 
+    quickAddSize: 1, 
+    target: 10, 
+    daily: false, 
+    id: 1,
+    color: 'red'
+    },
+    {name: 'Test Tracker 2', 
+    quickAddSize: 1, 
+    target: 10, 
+    daily: false, 
+    id: 2,
+    color: 'orange'
+    },
+    {name: 'Test Tracker 3', 
+    quickAddSize: 1, 
+    target: 10, 
+    daily: false, 
+    id: 3,
+    color: 'yellow'
+    },
+    {name: 'Test Tracker 4', 
+    quickAddSize: 1, 
+    target: 10, 
+    daily: false, 
+    id: 4,
+    color: 'green'
+    }
+  ],
   currentTracker: {
     name: 'Test Tracker', 
     quickAddSize: 1, 
