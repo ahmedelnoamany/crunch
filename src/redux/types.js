@@ -1,1 +1,2 @@
 export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+export const ADD_NEW_TRACKER = 'ADD_NEW_TRACKER';

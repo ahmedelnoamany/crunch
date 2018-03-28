@@ -42,6 +42,7 @@ const initialState = {
     // id: 1
   },
   trackerModalVisible: false,
+  lastTrackerId: 0,
 };
 
 export default function (state = initialState, action) {
@@ -53,6 +54,18 @@ export default function (state = initialState, action) {
       return {
         ...state,
         trackerModalVisible: action.payload,
+      }
+    }
+    case 'ADD_NEW_TRACKER': {
+      const currentTrackerArray = state.trackers.slice();
+      let lastTrackerId = state.lastTrackerId + 1;
+      let newTracker = action.payload;
+      newTracker.id = lastTrackerId;
+      currentTrackerArray.push(newTracker);
+      return {
+        ...state,
+        trackers: currentTrackerArray,
+        lastTrackerId
       }
     }
     default:
