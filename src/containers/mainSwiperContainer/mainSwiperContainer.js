@@ -20,10 +20,20 @@ class MainSwiperContainer extends Component {
   spreadTrackers() {
     let trackers = this.props.trackers.map((tracker, index) => (
         <View style={{flex: 1, flexDirection: 'column', backgroundColor:tracker.color}}>
-          <View style={{flex: 0.15, justifyContent: 'center', alignItems:'center'}}>
-            <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>
-              {tracker.name}
-            </Text>
+          <View style={{flex: 0.15, justifyContent: 'center', alignItems:'center', flexDirection: 'row', margin: '5%'}}>
+            <View style={{flex: 0.8}}>
+              <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>
+                {tracker.name}
+              </Text>
+            </View>
+            <View style={{flex: 0.2}}>
+              <TouchableHighlight 
+                onPress={() => this.SwiperComponent.scrollBy(-1*(index+1), true)}
+                style={{ height: '90%', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}
+              >
+                <Icon name='menu' size={40} color='white' />
+              </TouchableHighlight>
+            </View>
           </View>
           <View style={{flex: 0.35, justifyContent: 'center', alignItems: 'center'}}>
             <RandomPlaceHolder height={200} width={200} />
@@ -64,10 +74,14 @@ class MainSwiperContainer extends Component {
             </TouchableHighlight>
           ))
         }
+        <TouchableHighlight onPress={() => this.props.toggleModal(true)}>
+              <View style={{ height: 100, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center'}}> 
+                <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>+</Text>
+              </View>
+        </TouchableHighlight>
       </ScrollView>
     );
     trackers.unshift(trackersIndex);
-    console.log('here', trackers);
     return trackers;
   }
   render() {

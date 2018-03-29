@@ -1,22 +1,22 @@
 
 const initialState = {
   trackers: [
-    // {name: 'Test Tracker 1', 
-    // quickAddSize: 1,
-    // progress: 3,
-    // target: 10, 
-    // daily: false, 
-    // id: 1,
-    // color: 'red'
-    // },
-    // {name: 'Test Tracker 2', 
-    // quickAddSize: 1,
-    // progress: 5,
-    // target: 100, 
-    // daily: false, 
-    // id: 2,
-    // color: 'orange'
-    // },
+    {name: 'Test Tracker 1', 
+    quickAddSize: 1,
+    progress: 3,
+    target: 10, 
+    daily: false, 
+    id: 1,
+    color: 'red'
+    },
+    {name: 'Test Tracker 2', 
+    quickAddSize: 1,
+    progress: 5,
+    target: 100, 
+    daily: false, 
+    id: 2,
+    color: 'orange'
+    },
     // {name: 'Test Tracker 3', 
     // quickAddSize: 1,
     // progress: 10,

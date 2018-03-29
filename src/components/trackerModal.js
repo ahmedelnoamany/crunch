@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal } from '../redux/actions';
+import { toggleModal, addNewTracker } from '../redux/actions';
 import {
   Modal,
   View,
@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheckBox from 'react-native-checkbox';
-
+import randomColor from 'randomcolor';
 const window = Dimensions.get('window');
 const dismissKeyboard = require('dismissKeyboard');
 const initialState = {
@@ -48,6 +48,11 @@ class TrackerModal extends Component {
       newTracker.name = trackerName;
       newTracker.quickAddSize = trackerQuickAddSize;
       newTracker.progress = 0;
+      newTracker.target = trackerTarget;
+      newTracker.daily = trackerDaily;
+      newTracker.color = randomColor();
+      this.props.addNewTracker(newTracker);
+      this.cancelTrackerAdding();
     } else {
       Alert.alert(
         'Error',
@@ -64,17 +69,16 @@ class TrackerModal extends Component {
     this.props.toggleModal(false);
   }
   render() {
-    console.log('the value is: ', this.state.trackerTarget)
     return(
       <Modal
         visible={this.props.trackerModalVisible}
         animationType='slide'
         transparent
       >
-        <KeyboardAvoidingView 
-          contentContainerStyle={{
+        <View 
+          style={{
             flex: 1,
-            backgroundColor: '#FCFCFC',
+            backgroundColor: '#C7C7A6',
             marginTop: window.height * 0.3,
             shadowColor: 'black',
             shadowOpacity: 0.2,
@@ -82,17 +86,17 @@ class TrackerModal extends Component {
             }}
         >
          <View style={{
-            flex: 0.1 , flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 5,
+            flex: 0.1 , flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 5
           }}
           >
             <View>
-              <Text>
+              <Text style={{color:'#484538'}}>
                 {this.props.currentTracker.name ? 'Settings: ' + this.props.currentTracker.name : 'Add a New Tracker'}
               </Text>
             </View>
             <View style={{ paddingRight: '2%' }}>
               <TouchableHighlight onPress={() => { this.cancelTrackerAdding()}} >
-                <Icon name='close' size={30} color='#2B2D42' />
+                <Icon name='close' size={30} color='#484538' />
               </TouchableHighlight>
             </View>
           </View>
@@ -100,28 +104,42 @@ class TrackerModal extends Component {
             <View style={{flex: 0.1, padding: '1%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
               <Text>Name </Text>
               <TextInput
-                style={{ height: '100%',width: '60%', borderColor: 'gray', borderWidth: 1, borderRadius: 8}}
+                style={{ backgroundColor:'#FCFCFC', fontSize:24, fontWeight: '100', height: '100%',width: '60%', textAlign: 'center', borderColor: 'gray', borderWidth: 1, borderRadius: 8}}
                 onChangeText={(text) => this.setState({trackerName: text})}
                 placeholder='ex. Cups of Water'
               />
             </View>
             <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
-              <View style={{flex: 0.3,height: '80%', backgroundColor: 'red', borderRadius: 12, borderWidth: this.state.quickAdd1Selected ? 5 : 0}}>
                 <TouchableHighlight 
                   onPress={() => this.setState({trackerQuickAddSize: 1})} 
                   onShowUnderlay={() => this.quickAddSizeSelected('+1')}
+                  style={{
+                    flex: 0.3,
+                    height: '80%',
+                    justifyContent:'center',
+                    alignItems:'center',
+                    borderRadius: 12,
+                    borderWidth: this.state.quickAdd1Selected ? 3 : 1,
+                    backgroundColor: this.state.quickAdd1Selected ? '#6DD3CE' : '#C7C7A6'
+                  }}
                 >
-                  <Text style={{height: '100%', width: '100%', textAlign: 'center', fontSize: 30}}> +1 </Text>
+                  <Text style={{fontSize: 30, fontWeight: '100'}}> +1 </Text>
                 </TouchableHighlight>
-              </View>
-              <View style={{flex: 0.3,height: '80%', backgroundColor: 'yellow', borderRadius: 12, borderWidth: this.state.quickAdd2Selected ? 5 : 0}}>
                 <TouchableHighlight 
                   onPress={() => this.setState({trackerQuickAddSize: 10})}
                   onShowUnderlay={() => this.quickAddSizeSelected('+10')}
+                  style={{
+                    flex: 0.3,
+                    height: '80%', 
+                    justifyContent:'center',
+                    alignItems:'center', 
+                    borderRadius: 12, 
+                    borderWidth: this.state.quickAdd2Selected ? 3 : 1,
+                    backgroundColor: this.state.quickAdd2Selected ? '#6DD3CE' : '#C7C7A6'
+                  }}
                 >
-                  <Text style={{height: '100%',width:'100%',textAlign: 'center', fontSize: 30}}> +10 </Text>
+                  <Text style={{fontSize: 30, fontWeight: '100'}}> +10 </Text>
                 </TouchableHighlight>
-              </View>
               <TextInput
                 keyboardType='numeric'
                 returnKeyType="done"
@@ -132,7 +150,16 @@ class TrackerModal extends Component {
                     `+${this.state.trackerQuickAddSize}` : '+' 
                   }
                 onChange={e => this.setState({trackerQuickAddSize: Number(e.nativeEvent.text) > 0 ? Number(e.nativeEvent.text) : 1 })}
-                style={{flex: 0.3, fontSize: 30, textAlign: 'center', backgroundColor:'green', height: '80%', borderRadius: 12, borderWidth: this.state.quickAddBoxSelected ? 5 : 0}}
+                style={{
+                  flex: 0.3, 
+                  fontSize: 30, 
+                  fontWeight: '100', 
+                  textAlign: 'center', 
+                  height: '80%', 
+                  borderRadius: 12, 
+                  borderWidth: this.state.quickAddBoxSelected ? 3 : 1, 
+                  backgroundColor: this.state.quickAddBoxSelected ? '#6DD3CE' : '#C7C7A6'
+                }}
                 ref={input => { this.quickAddSizeInput = input }}
                 onFocus={() => {
                   this.quickAddSizeInput.clear()
@@ -140,8 +167,8 @@ class TrackerModal extends Component {
                 }}
               />
             </View>
-            <View style={{flex: 0.3}}>
-              <Text>Horizontal Scrollview with icons</Text>
+            <View style={{flex: 0.3, backgroundColor: '#FCFCFC', borderTopWidth: 2, borderBottomWidth: 2}}>
+              {/* <Text>Horizontal Scrollview with icons</Text> */}
             </View>
             <View style={{flex: 0.2, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
                 <View style={{flex: 0.8}}>
@@ -151,7 +178,7 @@ class TrackerModal extends Component {
                     returnKeyType='done'
                     value={this.state.trackerTarget > 0 ? this.state.trackerTarget.toString() : ''}
                     onChange={e => this.setState({trackerTarget: Number(e.nativeEvent.text)})}
-                    style={{ height: '60%',fontSize: 24, textAlign: 'center', backgroundColor:'green', borderRadius: 12}}
+                    style={{ backgroundColor: '#FCFCFC',height: '60%',fontSize: 24, fontWeight: '100', textAlign: 'center', borderColor: 'gray', borderWidth: 1, borderRadius: 8}}
                     ref={input => {this.targetInput = input}}
                     onFocus={() => {
                       this.targetInput.clear()
@@ -165,26 +192,29 @@ class TrackerModal extends Component {
                   onChange={checked => this.setState({trackerDaily: checked})}
                 />
             </View>
-            <View style={{flex: 0.2, backgroundColor: 'grey', width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-              <View style={{flex: 0.3, height:'100%', backgroundColor: 'yellow', alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{flex: 0.2, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderTopWidth: 2}}>
+              <View style={{flex: 0.3, height:'100%', alignItems: 'center', justifyContent: 'center'}}>
                 <TouchableHighlight 
                   onPress={() => this.cancelTrackerAdding()}
-                  style={{flex: 1, width: '100%', justifyContent: 'center'}}
+                  style={{flex: 1, width: '100%',alignItems:'center', justifyContent: 'center'}}
                 >
-                  <Text style={{ textAlign: 'center', fontSize: 30}}> Cancel </Text>
+                  <Icon name='cancel' size={50} color='#484538'/>
                 </TouchableHighlight>
               </View>
-              <View style={{flex: 0.7, height: '100%', backgroundColor: 'green', alignItems: 'center' ,justifyContent: 'center'}}>
+              <View style={{flex: 0.7, height: '100%', alignItems: 'center' ,justifyContent: 'center', borderLeftWidth: 1}}>
                   <TouchableHighlight 
                     onPress={() => this.saveTracker()}
-                    style={{flex: 1, width: '100%', justifyContent: 'center'}}
+                    style={{flex: 1, width: '100%'}}
                   >
-                    <Text style={{textAlign: 'center', fontSize: 30}}> Create Tracker! </Text>
+                    <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
+                      <Icon name='create' size={50} color='#484538' />
+                      <Text style={{textAlign: 'center', fontSize: 30, fontWeight:'100'}}> Create Tracker! </Text>
+                    </View>
                   </TouchableHighlight>
               </View>
               </View>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </Modal>
     )
   }
@@ -193,6 +223,7 @@ class TrackerModal extends Component {
 function bindActions(dispatch) {
   return {
     toggleModal: trackerModalVisible => dispatch(toggleModal(trackerModalVisible)),
+    addNewTracker: tracker => dispatch(addNewTracker(tracker)),
   }
 }
 
