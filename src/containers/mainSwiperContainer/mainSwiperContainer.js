@@ -27,7 +27,6 @@ class MainSwiperContainer extends Component {
               </Text>
             </View>
             <View style={{flex: 0.2}}>
-            {console.log(tracker.name, 'will scroll left by: ', -index+1)}
               <TouchableHighlight 
                 onPress={() => this.SwiperComponent.scrollBy(0, true)}
                 style={{ height: '90%', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}
@@ -49,29 +48,28 @@ class MainSwiperContainer extends Component {
           </View>
           <View style={{flex: 0.15}}>
             <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>PROGRESS: {tracker.progress} / {tracker.target} </Text>
-            <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>{tracker.target - tracker.progress === 0 ? `ALL DONE!` : `${tracker.target - tracker.progress} TO GO!`}</Text>
+            <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>{tracker.target - tracker.progress === 0 ? tracker.daily ? `ALL DONE FOR TODAY!`: 'ALL DONE!' : `${tracker.target - tracker.progress} TO GO!`}</Text>
           </View>
           <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => console.log('press')}>
+            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.props.toggleModal(true, tracker)}>
                 <Icon name='settings' size={70} />
             </TouchableHighlight>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => console.log('press')}>
+            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => tracker.progress > 0 ? this.props.incrementTracker(tracker.id, -tracker.quickAddSize) : null}>
                 <Icon name='minus' size={70} />
             </TouchableHighlight>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.props.incrementTracker(tracker.id, tracker.quickAddSize)}>
+            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => tracker.progress < tracker.target ? this.props.incrementTracker(tracker.id, tracker.quickAddSize) : null}>
                 <Icon name='plus' size={70} />
             </TouchableHighlight>
           </View>
         </View>
     ))
     let trackersIndex = (
-      <ScrollView contentContainerStyle={{flex: 1, flexDirection: 'column', backgroundColor: '#F1F7ED'}}>
+      <ScrollView contentContainerStyle={{flex: 1, flexDirection: 'column'}}>
         {
           this.props.trackers.map((tracker, index) => (
             <TouchableHighlight onPress={() => this.SwiperComponent.scrollBy(index + 1, true)}>
               <View style={{ height: 100, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center'}}> 
                 <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>{tracker.name}</Text>
-                {console.log(tracker, index)}
               </View>
             </TouchableHighlight>
           ))
@@ -100,7 +98,7 @@ class MainSwiperContainer extends Component {
         {this.props.trackers.length > 0 ? this.spreadTrackers() : (
           <TouchableHighlight 
           onPress={() => this.props.toggleModal(true)} 
-          style={{flex: 1,backgroundColor: '#F1F7ED', justifyContent: 'center', alignItems: 'center'}}
+          style={{flex: 1,backgroundColor: '#F6FBFB', justifyContent: 'center', alignItems: 'center'}}
           underlayColor='rgba(145,199,177,0.8)'
           >
             <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}> 
@@ -115,7 +113,7 @@ class MainSwiperContainer extends Component {
 
 function bindActions(dispatch) {
   return {
-    toggleModal: trackerModalVisible => dispatch(toggleModal(trackerModalVisible)),
+    toggleModal: (trackerModalVisible, displayItem) => dispatch(toggleModal(trackerModalVisible, displayItem)),
     incrementTracker: (trackerId, incrementSize) => dispatch(incrementTracker(trackerId, incrementSize)),
   }
 }

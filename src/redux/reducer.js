@@ -15,10 +15,21 @@ export default function (state = initialState, action) {
   }
   switch(action.type) {
     case 'TOGGLE_MODAL': {
-      return {
-        ...state,
-        trackerModalVisible: action.payload,
+      console.log('MODAL TOGGLED, REDUCER RECIEVED: ', action.payload)
+      if(action.payload.displayItem === undefined) {
+        return {
+          ...state,
+          currentTracker: {},
+          trackerModalVisible: action.payload.trackerModalVisible,
+        }
+      } else {
+        return {
+          ...state,
+          currentTracker: action.payload.displayItem,
+          trackerModalVisible: action.payload.trackerModalVisible,
+        }
       }
+      
     }
     case 'ADD_NEW_TRACKER': {
       const currentTrackerArray = state.trackers.slice();
@@ -34,15 +45,10 @@ export default function (state = initialState, action) {
     }
     case 'INCREMENT_TRACKER': {
       let currentTrackerArray = state.trackers.slice();
-      console.log('currentTrackerArray: ', currentTrackerArray);
-      let currentTrackerPosition = currentTrackerArray.findIndex(item => findById(item, action.payload.trackerId));
-      console.log('currentTrackerPosition: ', currentTrackerPosition);
-      let currentTracker = currentTrackerArray[currentTrackerPosition];
-      console.log('currentTracker: ', currentTracker);
-      currentTracker.progress += action.payload.incrementSize;
-      console.log('currentTracker updated: ', currentTracker);
-      currentTrackerArray.splice(currentTrackerPosition, 1, currentTracker);
-      console.log('Final array: ', currentTrackerArray);
+      let trackerFound = findTracker(currentTrackerArray, action.payload.trackerId);
+      trackerFound.currentTracker.progress += action.payload.incrementSize;
+      currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1, trackerFound.currentTracker);
+
       return {
         ...state,
         trackers: currentTrackerArray,
@@ -51,6 +57,11 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
+}
+findTracker = (trackerArray, trackerId) => {
+  let currentTrackerPosition = trackerArray.findIndex(item => findById(item, trackerId));
+  let currentTracker = trackerArray[currentTrackerPosition];
+  return {currentTracker, currentTrackerPosition};
 }
 function findById(item, trackerId) {
   return item.id === trackerId
