@@ -53,6 +53,7 @@ class TrackerModal extends Component {
       newTracker.color = randomColor();
       this.props.addNewTracker(newTracker);
       this.cancelTrackerAdding();
+      
     } else {
       Alert.alert(
         'Error',
@@ -66,7 +67,7 @@ class TrackerModal extends Component {
   }
   cancelTrackerAdding() {
     this.setState(initialState);
-    this.props.toggleModal(false);
+    setTimeout(() => this.props.toggleModal(false), 10);
   }
   render() {
     return(

@@ -1,6 +1,7 @@
 import {
   TOGGLE_MODAL,
   ADD_NEW_TRACKER,
+  INCREMENT_TRACKER,
 } from './types';
 
 export const toggleModal = trackerModalVisible => ({
@@ -11,4 +12,9 @@ export const toggleModal = trackerModalVisible => ({
 export const addNewTracker = tracker => ({
   type: ADD_NEW_TRACKER,
   payload: tracker,
+})
+
+export const incrementTracker = (trackerId, incrementSize) => ({
+  type: INCREMENT_TRACKER,
+  payload: {trackerId, incrementSize},
 })

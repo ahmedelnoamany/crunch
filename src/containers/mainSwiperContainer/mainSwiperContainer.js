@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal } from '../../redux/actions';
+import { toggleModal, incrementTracker } from '../../redux/actions';
 import {
   Dimensions,
   View,
@@ -18,7 +18,7 @@ const window = Dimensions.get('window');
 
 class MainSwiperContainer extends Component {
   spreadTrackers() {
-    let trackers = this.props.trackers.map((tracker, index) => (
+    let trackers = this.props.trackers.map((tracker, index, array) => (
         <View style={{flex: 1, flexDirection: 'column', backgroundColor:tracker.color}}>
           <View style={{flex: 0.15, justifyContent: 'center', alignItems:'center', flexDirection: 'row', margin: '5%'}}>
             <View style={{flex: 0.8}}>
@@ -27,8 +27,9 @@ class MainSwiperContainer extends Component {
               </Text>
             </View>
             <View style={{flex: 0.2}}>
+            {console.log(tracker.name, 'will scroll left by: ', -index+1)}
               <TouchableHighlight 
-                onPress={() => this.SwiperComponent.scrollBy(-1*(index+1), true)}
+                onPress={() => this.SwiperComponent.scrollBy(0, true)}
                 style={{ height: '90%', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}
               >
                 <Icon name='menu' size={40} color='white' />
@@ -57,7 +58,7 @@ class MainSwiperContainer extends Component {
             <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => console.log('press')}>
                 <Icon name='minus' size={70} />
             </TouchableHighlight>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => console.log('press')}>
+            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.props.incrementTracker(tracker.id, tracker.quickAddSize)}>
                 <Icon name='plus' size={70} />
             </TouchableHighlight>
           </View>
@@ -70,6 +71,7 @@ class MainSwiperContainer extends Component {
             <TouchableHighlight onPress={() => this.SwiperComponent.scrollBy(index + 1, true)}>
               <View style={{ height: 100, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center'}}> 
                 <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100'}}>{tracker.name}</Text>
+                {console.log(tracker, index)}
               </View>
             </TouchableHighlight>
           ))
@@ -81,14 +83,16 @@ class MainSwiperContainer extends Component {
         </TouchableHighlight>
       </ScrollView>
     );
+    console.log(trackers);
     trackers.unshift(trackersIndex);
+    console.log('after shift', trackers)
     return trackers;
   }
   render() {
     return (
       <Swiper
         index={0}
-        loop={true}
+        loop={false}
         showsPagination={false}
         scrollEnabled={true}
         ref={SwiperComponent => this.SwiperComponent = SwiperComponent}
@@ -112,6 +116,7 @@ class MainSwiperContainer extends Component {
 function bindActions(dispatch) {
   return {
     toggleModal: trackerModalVisible => dispatch(toggleModal(trackerModalVisible)),
+    incrementTracker: (trackerId, incrementSize) => dispatch(incrementTracker(trackerId, incrementSize)),
   }
 }
 

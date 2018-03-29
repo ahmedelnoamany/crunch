@@ -1,48 +1,12 @@
 
 const initialState = {
   trackers: [
-    {name: 'Test Tracker 1', 
-    quickAddSize: 1,
-    progress: 3,
-    target: 10, 
-    daily: false, 
-    id: 1,
-    color: 'red'
-    },
-    {name: 'Test Tracker 2', 
-    quickAddSize: 1,
-    progress: 5,
-    target: 100, 
-    daily: false, 
-    id: 2,
-    color: 'orange'
-    },
-    // {name: 'Test Tracker 3', 
-    // quickAddSize: 1,
-    // progress: 10,
-    // target: 10, 
-    // daily: false, 
-    // id: 3,
-    // color: 'yellow'
-    // },
-    // {name: 'Test Tracker 4', 
-    // quickAddSize: 1,
-    // progress:823, 
-    // target: 1000, 
-    // daily: false, 
-    // id: 4,
-    // color: 'green'
-    // }
   ],
   currentTracker: {
-    // name: 'Test Tracker', 
-    // quickAddSize: 1, 
-    // target: 10, 
-    // daily: false, 
-    // id: 1
+
   },
   trackerModalVisible: false,
-  lastTrackerId: 0,
+  lastTrackerId: 10,
 };
 
 export default function (state = initialState, action) {
@@ -68,7 +32,26 @@ export default function (state = initialState, action) {
         lastTrackerId
       }
     }
+    case 'INCREMENT_TRACKER': {
+      let currentTrackerArray = state.trackers.slice();
+      console.log('currentTrackerArray: ', currentTrackerArray);
+      let currentTrackerPosition = currentTrackerArray.findIndex(item => findById(item, action.payload.trackerId));
+      console.log('currentTrackerPosition: ', currentTrackerPosition);
+      let currentTracker = currentTrackerArray[currentTrackerPosition];
+      console.log('currentTracker: ', currentTracker);
+      currentTracker.progress += action.payload.incrementSize;
+      console.log('currentTracker updated: ', currentTracker);
+      currentTrackerArray.splice(currentTrackerPosition, 1, currentTracker);
+      console.log('Final array: ', currentTrackerArray);
+      return {
+        ...state,
+        trackers: currentTrackerArray,
+      }
+    }
     default:
       return state;
   }
+}
+function findById(item, trackerId) {
+  return item.id === trackerId
 }
