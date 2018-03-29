@@ -15,7 +15,6 @@ export default function (state = initialState, action) {
   }
   switch(action.type) {
     case 'TOGGLE_MODAL': {
-      console.log('MODAL TOGGLED, REDUCER RECIEVED: ', action.payload)
       if(action.payload.displayItem === undefined) {
         return {
           ...state,
@@ -43,10 +42,22 @@ export default function (state = initialState, action) {
         lastTrackerId
       }
     }
+    case 'UPDATE_TRACKER': {
+      let currentTrackerArray = state.trackers.slice();
+      let trackerFound = findTracker(currentTrackerArray, action.payload.trackerId);
+      currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1, action.payload);
+      return {
+        ...state,
+        trackers: currentTrackerArray,
+      }
+    }
     case 'INCREMENT_TRACKER': {
       let currentTrackerArray = state.trackers.slice();
       let trackerFound = findTracker(currentTrackerArray, action.payload.trackerId);
       trackerFound.currentTracker.progress += action.payload.incrementSize;
+      trackerFound.currentTracker.progress > trackerFound.currentTracker.target ?
+        trackerFound.currentTracker.progress = trackerFound.currentTracker.target :
+        trackerFound.currentTracker.progress < 0 ? trackerFound.currentTracker.progress = 0 : '';
       currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1, trackerFound.currentTracker);
 
       return {

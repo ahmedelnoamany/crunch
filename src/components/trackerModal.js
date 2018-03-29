@@ -65,7 +65,11 @@ class TrackerModal extends Component {
       newTracker.target = trackerTarget;
       newTracker.daily = trackerDaily;
       newTracker.color = randomColor();
-      type === 'save' ? this.props.addNewTracker(newTracker) : this.props.updateTracker(updatedTracker);
+      type === 'modify' ? (this.props.currentTracker.progress <= trackerTarget ? 
+      newTracker.progress = this.props.currentTracker.progress : 
+      newTracker.progress = trackerTarget ) :
+      '';
+      type === 'save' ? this.props.addNewTracker(newTracker) : this.props.updateTracker(newTracker);
       this.cancelTrackerAdding();
       
     } else {
