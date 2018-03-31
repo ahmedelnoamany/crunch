@@ -65,12 +65,13 @@ class TrackerModal extends Component {
       newTracker.progress = 0;
       newTracker.target = trackerTarget;
       newTracker.daily = trackerDaily;
-      newTracker.color = randomColor();
+      newTracker.color = type === 'modify' ? this.props.currentTracker.color : randomColor();
       type === 'modify' ? (this.props.currentTracker.progress <= trackerTarget ? 
       newTracker.progress = this.props.currentTracker.progress : 
       newTracker.progress = trackerTarget ) :
       '';
-      type === 'save' ? this.props.addNewTracker(newTracker) : this.props.updateTracker(newTracker);
+      // type === 'modify' ? newTracker.id = this.props.currentTracker.id : '';
+      type === 'save' ? this.props.addNewTracker(newTracker) : this.props.updateTracker(newTracker, this.props.currentTracker.id);
       this.cancelTrackerAdding();
       
     } else {
@@ -232,36 +233,37 @@ class TrackerModal extends Component {
                 </TouchableHighlight>
               </View>
               <View style={{flex: 0.7, height: '100%', alignItems: 'center' ,justifyContent: 'center', borderLeftWidth: 1, borderColor: '#BFD5D8',}}>
+                {this.state.mode !== 'settings' && (
                   <TouchableHighlight 
                     onPress={async () => {
-                      const { mode } = this.state 
-                      if (mode !== 'settings') {
-                        await this.saveTracker('save');
-                        await this.saveTrackers();
+                      await this.saveTracker('save');
+                      await this.saveTrackers();
                       }
-                      else {
-                        await this.saveTracker('modify');
-                        await this.saveTrackers();
-                        
-                      }
-                    }}
+                    }
                     style={{flex: 1, width: '100%'}}
                   >
-                  {(this.state.mode !== 'settings' && (
                     <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
                       <Icon name='create' size={50} color='#6F7F93' />
                       <Text style={{textAlign: 'center', fontSize: 30, fontWeight:'100', color: '#5B6879'}}> Create Tracker! </Text>
-                    </View>
-                  )) ||
-                    (this.state.mode === 'settings' && (
-                      <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
-                        <Icon name='file-upload' size={50} color='#6F7F93' />
-                        <Text style={{textAlign: 'center', fontSize: 30, fontWeight:'100', color: '#5B6879'}}> Update Tracker! </Text>
-                      </View>
-                    ))
-                  }
-                    
+                    </View>                    
                   </TouchableHighlight>
+                )}
+                {this.state.mode === 'settings' && (
+                  <TouchableHighlight 
+                    onPress={async () => {
+                        await this.saveTracker('modify');
+                        await this.saveTrackers();
+                      }
+                    }
+                    style={{flex: 1, width: '100%'}}
+                  >
+                    <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
+                      <Icon name='file-upload' size={50} color='#6F7F93' />
+                      <Text style={{textAlign: 'center', fontSize: 30, fontWeight:'100', color: '#5B6879'}}> Update Tracker! </Text>
+                    </View>                   
+                  </TouchableHighlight>
+                    
+                  )}
               </View>
               </View>
           </View>
@@ -275,7 +277,7 @@ function bindActions(dispatch) {
   return {
     toggleModal: (trackerModalVisible, displayItem) => dispatch(toggleModal(trackerModalVisible, displayItem)),
     addNewTracker: tracker => dispatch(addNewTracker(tracker)),
-    updateTracker: updatedTracker => dispatch(updateTracker(updatedTracker)),
+    updateTracker: (updatedTracker, trackerId) => dispatch(updateTracker(updatedTracker, trackerId)),
   }
 }
 

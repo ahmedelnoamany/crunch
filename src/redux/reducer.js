@@ -52,7 +52,9 @@ export default function (state = initialState, action) {
     case 'UPDATE_TRACKER': {
       let currentTrackerArray = state.trackers.slice();
       let trackerFound = findTracker(currentTrackerArray, action.payload.trackerId);
-      currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1, action.payload);
+      let newTracker = action.payload.updatedTracker;
+      newTracker.id = action.payload.trackerId;
+      currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1, newTracker);
       return {
         ...state,
         trackers: currentTrackerArray,

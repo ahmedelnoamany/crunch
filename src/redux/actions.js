@@ -26,7 +26,7 @@ export const incrementTracker = (trackerId, incrementSize) => ({
   payload: {trackerId, incrementSize},
 });
 
-export const updateTracker = updatedTracker => ({
+export const updateTracker = (updatedTracker, trackerId) => ({
   type: UPDATE_TRACKER,
-  payload: updatedTracker,
+  payload: {updatedTracker, trackerId},
 });

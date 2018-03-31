@@ -18,12 +18,22 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const window = Dimensions.get('window');
 
 class MainSwiperContainer extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      loading: false
+    }
+  }
   async componentWillMount (props){
+    // await AsyncStorage.removeItem('trackers');
+    // await AsyncStorage.removeItem('lastTrackerId');
+    await this.setState({loading: true})
     let trackers = await AsyncStorage.getItem('trackers');
     let lastTrackerId = await AsyncStorage.getItem('lastTrackerId');
     trackers = trackers === null ? [] : JSON.parse(trackers);
     lastTrackerId = lastTrackerId === null ? 0 : JSON.parse(lastTrackerId);
     this.props.loadTrackers(trackers, lastTrackerId);
+    this.setState({loading: false})
   }
   spreadTrackers() {
     let trackers = this.props.trackers.map((tracker, index, array) => (
@@ -101,7 +111,13 @@ class MainSwiperContainer extends Component {
         scrollEnabled={true}
         ref={SwiperComponent => this.SwiperComponent = SwiperComponent}
       >
-        {this.props.trackers.length > 0 ? this.spreadTrackers() : (
+        {this.props.trackers.length > 0 ? this.spreadTrackers() : this.state.loading ? 
+        (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
+              <Text style={{fontStyle: 'normal', fontSize: 40, fontWeight: '100', textAlign:'center'}}>Loading...</Text>
+            </View>
+        ):
+        (
           <TouchableHighlight 
           onPress={() => this.props.toggleModal(true)} 
           style={{flex: 1,backgroundColor: '#F6FBFB', justifyContent: 'center', alignItems: 'center'}}
