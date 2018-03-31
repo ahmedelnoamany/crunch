@@ -6,7 +6,7 @@ const initialState = {
 
   },
   trackerModalVisible: false,
-  lastTrackerId: 10,
+  lastTrackerId: 0,
 };
 
 export default function (state = initialState, action) {
@@ -14,6 +14,13 @@ export default function (state = initialState, action) {
     this.state = initialState;
   }
   switch(action.type) {
+    case 'LOAD_TRACKERS': {
+      return {
+        ...state,
+        trackers: action.payload.trackers,
+        lastTrackerId: action.payload.lastTrackerId,
+      }
+    }
     case 'TOGGLE_MODAL': {
       if(action.payload.displayItem === undefined) {
         return {

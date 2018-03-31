@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal, incrementTracker } from '../../redux/actions';
+import { loadTrackers, toggleModal, incrementTracker } from '../../redux/actions';
 import {
+  AsyncStorage,
   Dimensions,
   View,
   Text,
@@ -17,6 +18,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const window = Dimensions.get('window');
 
 class MainSwiperContainer extends Component {
+  async componentWillMount (props){
+    let trackers = await AsyncStorage.getItem('trackers');
+    let lastTrackerId = await AsyncStorage.getItem('lastTrackerId');
+    trackers = trackers === null ? [] : JSON.parse(trackers);
+    lastTrackerId = lastTrackerId === null ? 0 : JSON.parse(lastTrackerId);
+    this.props.loadTrackers(trackers, lastTrackerId);
+  }
   spreadTrackers() {
     let trackers = this.props.trackers.map((tracker, index, array) => (
         <View style={{flex: 1, flexDirection: 'column', backgroundColor:tracker.color}}>
@@ -64,7 +72,7 @@ class MainSwiperContainer extends Component {
         </View>
     ))
     let trackersIndex = (
-      <ScrollView contentContainerStyle={{flex: 1, flexDirection: 'column'}}>
+      <ScrollView contentContainerStyle={{flex: 1, height:'100%', flexDirection: 'column'}}>
         {
           this.props.trackers.map((tracker, index) => (
             <TouchableHighlight onPress={() => this.SwiperComponent.scrollBy(index + 1, true)}>
@@ -81,9 +89,7 @@ class MainSwiperContainer extends Component {
         </TouchableHighlight>
       </ScrollView>
     );
-    console.log(trackers);
     trackers.unshift(trackersIndex);
-    console.log('after shift', trackers)
     return trackers;
   }
   render() {
@@ -113,6 +119,7 @@ class MainSwiperContainer extends Component {
 
 function bindActions(dispatch) {
   return {
+    loadTrackers: (trackers, lastTrackerId) => dispatch(loadTrackers(trackers, lastTrackerId)),
     toggleModal: (trackerModalVisible, displayItem) => dispatch(toggleModal(trackerModalVisible, displayItem)),
     incrementTracker: (trackerId, incrementSize) => dispatch(incrementTracker(trackerId, incrementSize)),
   }

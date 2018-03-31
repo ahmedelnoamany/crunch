@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toggleModal, addNewTracker, updateTracker } from '../redux/actions';
 import {
+  AsyncStorage,
   Modal,
   View,
   Text,
@@ -82,6 +83,10 @@ class TrackerModal extends Component {
       );
     }
       
+  }
+  async saveTrackers() {
+    await AsyncStorage.setItem('trackers', JSON.stringify(this.props.trackers));
+    await AsyncStorage.setItem('lastTrackerId', JSON.stringify(this.props.lastTrackerId));
   }
   cancelTrackerAdding() {
     this.setState(initialState);
@@ -228,7 +233,18 @@ class TrackerModal extends Component {
               </View>
               <View style={{flex: 0.7, height: '100%', alignItems: 'center' ,justifyContent: 'center', borderLeftWidth: 1, borderColor: '#BFD5D8',}}>
                   <TouchableHighlight 
-                    onPress={() => this.state.mode !== 'settings' ? this.saveTracker('save') : this.saveTracker('modify')}
+                    onPress={async () => {
+                      const { mode } = this.state 
+                      if (mode !== 'settings') {
+                        await this.saveTracker('save');
+                        await this.saveTrackers();
+                      }
+                      else {
+                        await this.saveTracker('modify');
+                        await this.saveTrackers();
+                        
+                      }
+                    }}
                     style={{flex: 1, width: '100%'}}
                   >
                   {(this.state.mode !== 'settings' && (
@@ -266,6 +282,8 @@ function bindActions(dispatch) {
 const mapStateToProps = state => ({
   trackerModalVisible: state.trackerModalVisible,
   currentTracker: state.currentTracker,
+  lastTrackerId: state.lastTrackerId,
+  trackers : state.trackers,
 });
 
 export default connect(mapStateToProps, bindActions)(TrackerModal);
