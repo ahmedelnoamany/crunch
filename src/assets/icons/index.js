@@ -17,7 +17,7 @@ import Plant from './plant';
 import Pool from './pool';
 import Treadmill from './treadmill';
 import Trees from './trees';
-import Weight from 'weight';
+import Weight from './weight';
 
 export default Icons = [
   {icon: Bike, title: 'Bike'},

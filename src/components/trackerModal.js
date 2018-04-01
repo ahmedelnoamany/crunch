@@ -17,6 +17,8 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheckBox from 'react-native-checkbox';
 import randomColor from 'randomcolor';
+import Icons from '../assets/icons/index';
+
 const window = Dimensions.get('window');
 const dismissKeyboard = require('dismissKeyboard');
 const initialState = {
@@ -217,6 +219,21 @@ class TrackerModal extends Component {
                       <Text>
                         {this.state.highlightedIndex === Item.index ? `Selected!` : ``}
                       </Text>
+                    </View>
+                    </TouchableHighlight>)}}
+                  />
+                </View>
+                <View style={{flex: 0.5}}>
+                  <FlatList 
+                    style={{flex: 1}} 
+                    contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                    data={Icons}
+                    horizontal={true}
+                    renderItem={(Item) => {
+                    return (
+                    <TouchableHighlight onPress={() => console.log('Press')}>
+                    <View style={{width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
+                      <Item.item.icon height= {50} width={50}/>
                     </View>
                     </TouchableHighlight>)}}
                   />
