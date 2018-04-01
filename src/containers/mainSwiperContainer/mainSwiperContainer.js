@@ -28,13 +28,21 @@ class MainSwiperContainer extends Component {
     // await AsyncStorage.removeItem('trackers');
     // await AsyncStorage.removeItem('lastTrackerId');
     await this.setState({loading: true})
+    let openDate = new Date();
     let trackers = await AsyncStorage.getItem('trackers');
     let lastTrackerId = await AsyncStorage.getItem('lastTrackerId');
     trackers = trackers === null ? [] : JSON.parse(trackers);
     lastTrackerId = lastTrackerId === null ? 0 : JSON.parse(lastTrackerId);
-    this.props.loadTrackers(trackers, lastTrackerId);
+    this.props.loadTrackers(trackers, lastTrackerId, openDate);
+
     this.setState({loading: false})
   }
+  async saveTrackers() {
+    console.log('Save called')
+    await AsyncStorage.setItem('trackers', JSON.stringify(this.props.trackers));
+    await AsyncStorage.setItem('lastTrackerId', JSON.stringify(this.props.lastTrackerId));
+  }
+
   spreadTrackers() {
     let trackers = this.props.trackers.map((tracker, index, array) => (
         <View style={{flex: 1, flexDirection: 'column', backgroundColor:tracker.color}}>
@@ -61,7 +69,7 @@ class MainSwiperContainer extends Component {
             progress={(tracker.progress / tracker.target)}
             style={{width: window.width}}
             backgroundStyle={{}}
-            fillStyle={{ backgroundColor: 'pink', height: window.height * 0.145, borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
+            fillStyle={{ backgroundColor: 'white', height: window.height * 0.145, borderTopRightRadius: 12, borderBottomRightRadius: 12 }}
           />
           </View>
           <View style={{flex: 0.15}}>
@@ -69,13 +77,31 @@ class MainSwiperContainer extends Component {
             <Text style={{fontStyle: 'normal', fontSize: 30, fontWeight: '100'}}>{tracker.target - tracker.progress === 0 ? tracker.daily ? `ALL DONE FOR TODAY!`: 'ALL DONE!' : `${tracker.target - tracker.progress} TO GO!`}</Text>
           </View>
           <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.props.toggleModal(true, tracker)}>
+            <TouchableHighlight 
+              style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}}
+              onPress={() => this.props.toggleModal(true, tracker)}>
                 <Icon name='settings' size={70} />
             </TouchableHighlight>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => tracker.progress > 0 ? this.props.incrementTracker(tracker.id, -tracker.quickAddSize) : null}>
+            <TouchableHighlight 
+              style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} 
+              onPress={() => {
+                if (tracker.progress > 0 ){
+                  this.props.incrementTracker(tracker.id, -tracker.quickAddSize);
+                  this.saveTrackers();
+                }
+              }}
+            >
                 <Icon name='minus' size={70} />
             </TouchableHighlight>
-            <TouchableHighlight style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}} onPress={() => tracker.progress < tracker.target ? this.props.incrementTracker(tracker.id, tracker.quickAddSize) : null}>
+            <TouchableHighlight 
+              style={{flex: 1/3, justifyContent: 'center', alignItems: 'center'}}
+              onPress={() => {
+                if(tracker.progress < tracker.target) {
+                  this.props.incrementTracker(tracker.id, tracker.quickAddSize);
+                  this.saveTrackers();
+                }
+              }}
+            >
                 <Icon name='plus' size={70} />
             </TouchableHighlight>
           </View>
@@ -144,6 +170,7 @@ function bindActions(dispatch) {
 const mapStateToProps = state => ({
   currentTracker: state.currentTracker,
   trackers: state.trackers,
+  lastTrackerId: state.lastTrackerId,
 })
 
 export default connect (mapStateToProps, bindActions)(MainSwiperContainer);

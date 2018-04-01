@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal, addNewTracker, updateTracker } from '../redux/actions';
+import { toggleModal, addNewTracker, updateTracker, deleteTracker } from '../redux/actions';
 import {
   AsyncStorage,
   Modal,
@@ -86,6 +86,7 @@ class TrackerModal extends Component {
       
   }
   async saveTrackers() {
+    console.log('Save called')
     await AsyncStorage.setItem('trackers', JSON.stringify(this.props.trackers));
     await AsyncStorage.setItem('lastTrackerId', JSON.stringify(this.props.lastTrackerId));
   }
@@ -223,16 +224,16 @@ class TrackerModal extends Component {
                   borderColor='#BFD5D8'
                 />
             </View>
-            <View style={{flex: 0.2, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderTopWidth: 2, borderColor: '#BFD5D8',}}>
+            <View style={{flex: 0.2, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderColor: '#BFD5D8'}}>
               <View style={{flex: 0.3, height:'100%', alignItems: 'center', justifyContent: 'center'}}>
                 <TouchableHighlight 
                   onPress={() => this.cancelTrackerAdding()}
-                  style={{flex: 1, width: '100%',alignItems:'center', justifyContent: 'center'}}
+                  style={{flex: 1, width: '100%',alignItems:'center', justifyContent: 'center' ,backgroundColor:'#D5D5D5'}}
                 >
                   <Icon name='cancel' size={50} color='#6F7F93'/>
                 </TouchableHighlight>
               </View>
-              <View style={{flex: 0.7, height: '100%', alignItems: 'center' ,justifyContent: 'center', borderLeftWidth: 1, borderColor: '#BFD5D8',}}>
+              <View style={{flex: 0.7, height: '100%', alignItems: 'center' ,justifyContent: 'center', borderLeftWidth: 1, borderColor: '#BFD5D8'}}>
                 {this.state.mode !== 'settings' && (
                   <TouchableHighlight 
                     onPress={async () => {
@@ -240,7 +241,7 @@ class TrackerModal extends Component {
                       await this.saveTrackers();
                       }
                     }
-                    style={{flex: 1, width: '100%'}}
+                    style={{flex: 1, width: '100%', backgroundColor: '#76DE8C'}}
                   >
                     <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
                       <Icon name='create' size={50} color='#6F7F93' />
@@ -249,20 +250,43 @@ class TrackerModal extends Component {
                   </TouchableHighlight>
                 )}
                 {this.state.mode === 'settings' && (
-                  <TouchableHighlight 
-                    onPress={async () => {
-                        await this.saveTracker('modify');
-                        await this.saveTrackers();
-                      }
-                    }
-                    style={{flex: 1, width: '100%'}}
-                  >
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <TouchableHighlight
+                      onPress={ () => {
+                        Alert.alert(
+                          'Warning',
+                          'Deleting a tracker cannot be undone, continue?',
+                          [
+                            {text: 'Cancel', onPress: () => {}},
+                            {text: 'Continue', onPress: async () => {
+                              await this.props.deleteTracker(this.props.currentTracker.id);
+                              this.saveTrackers();
+                              this.cancelTrackerAdding();
+                            }}
+                          ]
+                        );
+                      }}
+                      style={{flex: 0.4, height: '100%', backgroundColor: '#DD1C1A'}}
+                    >
                     <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
-                      <Icon name='file-upload' size={50} color='#6F7F93' />
-                      <Text style={{textAlign: 'center', fontSize: 30, fontWeight:'100', color: '#5B6879'}}> Update Tracker! </Text>
-                    </View>                   
-                  </TouchableHighlight>
-                    
+                        <Icon name='delete' size={50} color='#6F7F93' />
+                      </View>  
+                    </TouchableHighlight>
+
+                    <TouchableHighlight 
+                      onPress={async () => {
+                          await this.saveTracker('modify');
+                          await this.saveTrackers();
+                        }
+                      }
+                      style={{flex: 0.6, borderLeftWidth: 1, borderColor: '#BFD5D8', backgroundColor: '#76DE8C'}}
+                    >
+                      <View style={{flex: 1, justifyContent: 'center', flexDirection:'row', alignItems: 'center'}}>
+                        <Icon name='file-upload' size={50} color='#6F7F93' />
+                        <Text style={{textAlign: 'center', fontSize: 20, fontWeight:'200', color: '#5B6879'}}> Update! </Text>
+                      </View>                   
+                    </TouchableHighlight>
+                  </View>
                   )}
               </View>
               </View>
@@ -278,6 +302,7 @@ function bindActions(dispatch) {
     toggleModal: (trackerModalVisible, displayItem) => dispatch(toggleModal(trackerModalVisible, displayItem)),
     addNewTracker: tracker => dispatch(addNewTracker(tracker)),
     updateTracker: (updatedTracker, trackerId) => dispatch(updateTracker(updatedTracker, trackerId)),
+    deleteTracker: trackerId => dispatch(deleteTracker(trackerId)),
   }
 }
 

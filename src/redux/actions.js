@@ -4,6 +4,7 @@ import {
   ADD_NEW_TRACKER,
   INCREMENT_TRACKER,
   UPDATE_TRACKER,
+  DELETE_TRACKER,
 } from './types';
 
 export const loadTrackers = (trackers, lastTrackerId) => ({
@@ -29,4 +30,9 @@ export const incrementTracker = (trackerId, incrementSize) => ({
 export const updateTracker = (updatedTracker, trackerId) => ({
   type: UPDATE_TRACKER,
   payload: {updatedTracker, trackerId},
+});
+
+export const deleteTracker = trackerId => ({
+  type: DELETE_TRACKER,
+  payload: trackerId,
 });
