@@ -203,7 +203,7 @@ class TrackerModal extends Component {
                 }}
               />
             </View>
-            <View style={{flex: 0.3, backgroundColor: '#FCFCFC', borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#BFD5D8', flexDirection:'column'}}>
+            <View style={{flex: 0.3, backgroundColor: '#FCFCFC', borderBottomWidth: 2, borderColor: '#BFD5D8', flexDirection:'column'}}>
                 <View style={{flex: 0.5}}>
                   <FlatList 
                     style={{flex: 1}} 
@@ -213,7 +213,7 @@ class TrackerModal extends Component {
                     renderItem={(Item) => {
                     return (
                     <TouchableHighlight onPress={() => this.setState({trackerColor: Item.item, highlightedIndex: Item.index})}>
-                    <View style={{backgroundColor: Item.item, borderWidth: this.state.highlightedIndex === Item.index ? 5 : 0, marginTop:10, width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
+                    <View style={{backgroundColor: Item.item, borderWidth: this.state.highlightedIndex === Item.index ? 5 : 0, width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
                       <Text>
                         {this.state.highlightedIndex === Item.index ? `Selected!` : ``}
                       </Text>

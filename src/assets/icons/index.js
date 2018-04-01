@@ -1,0 +1,43 @@
+import Bike from './bike';
+import Book from './book';
+import Canvas from './canvas';
+import Cig from './cig';
+import Computer from './computer';
+import Dj from './dj';
+import Dumbbell from './dumbbell';
+import Eco from './eco';
+import Guitar from './guitar';
+import Medal from './medal';
+import Muscle from './muscle';
+import Note from './note';
+import Paint from './paint';
+import Pen from './pen';
+import Piano from './piano';
+import Plant from './plant';
+import Pool from './pool';
+import Treadmill from './treadmill';
+import Trees from './trees';
+import Weight from 'weight';
+
+export default Icons = [
+  {icon: Bike, title: 'Bike'},
+  {icon: Book, title: 'Book'},
+  {icon: Canvas, title: 'Canvas'},
+  {icon: Cig, title: 'Cig'},
+  {icon: Computer, title: 'Computer'},
+  {icon: Dj, title: 'Dj'},
+  {icon: Dumbbell, title: 'Dumbbell'},
+  {icon: Eco, title: 'Eco'},
+  {icon: Guitar, title: 'Guitar'},
+  {icon: Medal, title: 'Medal'},
+  {icon: Muscle, title: 'Muscle'},
+  {icon: Note, title: 'Note'},
+  {icon: Paint, title: 'Paint'},
+  {icon: Pen, title: 'Pen'},
+  {icon: Piano, title: 'Piano'},
+  {icon: Plant, title: 'Plant'},
+  {icon: Pool, title: 'Pool'},
+  {icon: Treadmill, title: 'Treadmill'},
+  {icon: Trees, title: 'Trees'},
+  {icon: Weight, title: 'Weight'},
+]
