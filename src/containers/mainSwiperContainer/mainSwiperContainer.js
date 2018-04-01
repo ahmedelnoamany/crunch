@@ -11,7 +11,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import RandomPlaceHolder from '../../assets/glassOfWater';
+import Icons from '../../assets/icons/index';
 import ProgressBar from '../../components/progressBar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -62,7 +62,13 @@ class MainSwiperContainer extends Component {
             </View>
           </View>
           <View style={{flex: 0.35, justifyContent: 'center', alignItems: 'center'}}>
-            <RandomPlaceHolder height={200} width={200} />
+            {
+              Icons.map((CurrentIcon, index) => {
+                if(CurrentIcon.title === tracker.icon) {
+                  return <CurrentIcon.icon height={200} width={200} />
+                }
+              })
+            }
           </View> 
           <View style={{flex: 0.15}} >
           <ProgressBar

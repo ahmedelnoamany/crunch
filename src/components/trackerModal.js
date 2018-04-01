@@ -30,28 +30,62 @@ const initialState = {
   quickAdd2Selected: false,
   quickAddBoxSelected: false,
   trackerColor: '',
+  trackerIcon: '',
   highlightedIndex: 0,
+  highlightedIcon: 0,
   mode: '',
 }
 class TrackerModal extends Component {
   constructor(props){
     super(props);
     this.state= initialState;
-    this.colors = [];
-    for(let i = 0; i< 15; i++){this.colors.push(randomColor())};
+    this.colors = [
+      "#3d9de2",
+      "#f2dfb0",
+      "#ef4cc1",
+      "#67dd61",
+      "#0c78cc",
+      "#c18017",
+      "#6c820b",
+      "#530fdb",
+      "#0c6cb5",
+      "#f7dc0e",
+      "#44c11b",
+      "#c68917",
+      "#fc97d5",
+      "#fffcbf",
+      "#c41552",
+    ];
   }
   componentWillReceiveProps(props) {
-    Object.keys(props.currentTracker).length > 0 ? this.setState({
-      trackerName: props.currentTracker.name,
-      trackerQuickAddSize: props.currentTracker.quickAddSize,
-      trackerTarget: props.currentTracker.target,
-      trackerDaily: props.currentTracker.daily,
-      quickAdd1Selected: props.currentTracker.quickAddSize === 1 ? true: false,
-      quickAdd2Selected: props.currentTracker.quickAddSize === 10 ? true: false,
-      quickAddBoxSelected: props.currentTracker.quickAddSize > 0 && props.currentTracker.quickAddSize !== 1 && props.currentTracker.quickAddSize !== 10 ? true: false,
-      mode: 'settings',
-    }) :
-    {};
+    if(Object.keys(props.currentTracker).length > 0) { 
+      let iconIndex = 0
+      Icons.map((icon, index) => {
+        if(icon.title === props.currentTracker.icon) {
+          iconIndex = index;
+        } 
+      });
+      let colorIndex = 0;
+      this.colors.map((color, index) => {
+        if(color === props.currentTracker.color) {
+          colorIndex = index;
+        }
+      })
+      this.setState({
+        trackerName: props.currentTracker.name,
+        trackerQuickAddSize: props.currentTracker.quickAddSize,
+        trackerTarget: props.currentTracker.target,
+        trackerDaily: props.currentTracker.daily,
+        trackerColor: props.currentTracker.color,
+        trackerIcon: props.currentTracker.trackerIcon,
+        quickAdd1Selected: props.currentTracker.quickAddSize === 1 ? true: false,
+        quickAdd2Selected: props.currentTracker.quickAddSize === 10 ? true: false,
+        quickAddBoxSelected: props.currentTracker.quickAddSize > 0 && props.currentTracker.quickAddSize !== 1 && props.currentTracker.quickAddSize !== 10 ? true: false,
+        highlightedIndex: colorIndex,
+        highlightedIcon: iconIndex,
+        mode: 'settings',
+      }) 
+    }
   }
   quickAddSizeSelected(name) {
     name !== 'text' ? dismissKeyboard() : '';
@@ -64,7 +98,7 @@ class TrackerModal extends Component {
       this.setState({quickAdd1Selected: false, quickAdd2Selected: false, quickAddBoxSelected: false})
   }
   saveTracker(type) {
-    let {trackerName, trackerQuickAddSize, trackerTarget, trackerDaily} = this.state;
+    let {trackerName, trackerQuickAddSize, trackerTarget, trackerDaily, trackerColor, trackerIcon} = this.state;
     if(trackerName.length > 0 && trackerQuickAddSize > 0 && trackerTarget > 0) {
       let newTracker = {};
       newTracker.name = trackerName;
@@ -72,7 +106,8 @@ class TrackerModal extends Component {
       newTracker.progress = 0;
       newTracker.target = trackerTarget;
       newTracker.daily = trackerDaily;
-      newTracker.color = type === 'modify' ? this.props.currentTracker.color : randomColor();
+      newTracker.color = trackerColor ? trackerColor : this.colors[0];
+      newTracker.icon = trackerIcon ? trackerIcon : Icons[0].title;
       type === 'modify' ? (this.props.currentTracker.progress <= trackerTarget ? 
       newTracker.progress = this.props.currentTracker.progress : 
       newTracker.progress = trackerTarget ) :
@@ -231,8 +266,8 @@ class TrackerModal extends Component {
                     horizontal={true}
                     renderItem={(Item) => {
                     return (
-                    <TouchableHighlight onPress={() => console.log('Press')}>
-                    <View style={{width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
+                    <TouchableHighlight onPress={() => this.setState({trackerIcon: Item.item.title, highlightedIcon: Item.index})}>
+                    <View style={{borderWidth: this.state.highlightedIcon === Item.index ? 5: 0, width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
                       <Item.item.icon height= {50} width={50}/>
                     </View>
                     </TouchableHighlight>)}}
@@ -289,6 +324,7 @@ class TrackerModal extends Component {
                 )}
                 {this.state.mode === 'settings' && (
                   <View style={{flex: 1, flexDirection: 'row'}}>
+                    {console.log('The ID is: ', this.props.currentTracker.id)}
                     <TouchableHighlight
                       onPress={ () => {
                         Alert.alert(
@@ -298,8 +334,8 @@ class TrackerModal extends Component {
                             {text: 'Cancel', onPress: () => {}},
                             {text: 'Continue', onPress: async () => {
                               await this.props.deleteTracker(this.props.currentTracker.id);
-                              this.saveTrackers();
-                              this.cancelTrackerAdding();
+                              await this.saveTrackers();
+                              await this.cancelTrackerAdding();
                             }}
                           ]
                         );
