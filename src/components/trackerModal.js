@@ -11,7 +11,8 @@ import {
   TextInput,
   Keyboard,
   Alert,
-  KeyboardAvoidingView,
+  ScrollView,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheckBox from 'react-native-checkbox';
@@ -26,12 +27,16 @@ const initialState = {
   quickAdd1Selected: false,
   quickAdd2Selected: false,
   quickAddBoxSelected: false,
+  trackerColor: '',
+  highlightedIndex: 0,
   mode: '',
 }
 class TrackerModal extends Component {
   constructor(props){
     super(props);
     this.state= initialState;
+    this.colors = [];
+    for(let i = 0; i< 15; i++){this.colors.push(randomColor())};
   }
   componentWillReceiveProps(props) {
     Object.keys(props.currentTracker).length > 0 ? this.setState({
@@ -198,8 +203,24 @@ class TrackerModal extends Component {
                 }}
               />
             </View>
-            <View style={{flex: 0.3, backgroundColor: '#FCFCFC', borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#BFD5D8'}}>
-              {/* <Text>Horizontal Scrollview with icons</Text> */}
+            <View style={{flex: 0.3, backgroundColor: '#FCFCFC', borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#BFD5D8', flexDirection:'column'}}>
+                <View style={{flex: 0.5}}>
+                  <FlatList 
+                    style={{flex: 1}} 
+                    contentContainerStyle={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                    data={this.colors}
+                    horizontal={true}
+                    renderItem={(Item) => {
+                    return (
+                    <TouchableHighlight onPress={() => this.setState({trackerColor: Item.item, highlightedIndex: Item.index})}>
+                    <View style={{backgroundColor: Item.item, borderWidth: this.state.highlightedIndex === Item.index ? 5 : 0, marginTop:10, width: 100, height: 150, justifyContent: 'center', alignItems:'center'}}>
+                      <Text>
+                        {this.state.highlightedIndex === Item.index ? `Selected!` : ``}
+                      </Text>
+                    </View>
+                    </TouchableHighlight>)}}
+                  />
+                </View>
             </View>
             <View style={{flex: 0.2, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
                 <View style={{flex: 0.8}}>
