@@ -32,7 +32,8 @@ export const updateTracker = (updatedTracker, trackerId) => ({
   payload: {updatedTracker, trackerId},
 });
 
-export const deleteTracker = trackerId => ({
-  type: DELETE_TRACKER,
-  payload: trackerId,
-});
+export const deleteTracker = trackerId => {
+  console.log('Action recieved id: ', trackerId)
+  return {type: DELETE_TRACKER,
+  payload: trackerId,}
+};

@@ -73,6 +73,7 @@ class TrackerModal extends Component {
       })
       this.setState({
         trackerName: props.currentTracker.name,
+        trackerId: props.currentTracker.id,
         trackerQuickAddSize: props.currentTracker.quickAddSize,
         trackerTarget: props.currentTracker.target,
         trackerDaily: props.currentTracker.daily,
@@ -131,6 +132,11 @@ class TrackerModal extends Component {
     console.log('Save called')
     await AsyncStorage.setItem('trackers', JSON.stringify(this.props.trackers));
     await AsyncStorage.setItem('lastTrackerId', JSON.stringify(this.props.lastTrackerId));
+  }
+  async deleteIt() {
+    this.props.deleteTracker(this.props.currentTracker.id);
+    this.saveTrackers();
+    this.cancelTrackerAdding();
   }
   cancelTrackerAdding() {
     this.setState(initialState);
@@ -335,10 +341,9 @@ class TrackerModal extends Component {
                             {text: 'Continue', onPress: async () => {
                               await this.props.deleteTracker(this.props.currentTracker.id);
                               await this.saveTrackers();
-                              await this.cancelTrackerAdding();
+                              this.cancelTrackerAdding();
                             }}
-                          ]
-                        );
+                          ]);   
                       }}
                       style={{flex: 0.4, height: '100%', backgroundColor: '#DD1C1A'}}
                     >

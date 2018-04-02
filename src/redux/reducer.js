@@ -86,8 +86,8 @@ export default function (state = initialState, action) {
     }
     case 'DELETE_TRACKER': {
       let currentTrackerArray = state.trackers.slice();
-      console.log('Current Tracker Array: ', currentTrackerArray, ' Tracker ID: ', action.payload.trackerId);
-      let trackerFound = findTracker(currentTrackerArray, action.payload.trackerId);
+      console.log('Current Tracker Array: ', currentTrackerArray, ' Tracker ID: ', action.payload);
+      let trackerFound = findTracker(currentTrackerArray, action.payload);
       console.log('FOUND TRACKER TO DELETE: ', trackerFound);
       currentTrackerArray.splice(trackerFound.currentTrackerPosition, 1);
       return {

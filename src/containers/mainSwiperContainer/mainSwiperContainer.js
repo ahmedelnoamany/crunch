@@ -54,7 +54,10 @@ class MainSwiperContainer extends Component {
             </View>
             <View style={{flex: 0.2}}>
               <TouchableHighlight 
-                onPress={() => this.SwiperComponent.scrollBy(0, true)}
+                onPress={() => {
+                  this.SwiperComponent.scrollBy(0, true)
+                  console.log('SCROLLING BACK')
+                }}
                 style={{ height: '90%', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}
               >
                 <Icon name='menu' size={40} color='white' />
